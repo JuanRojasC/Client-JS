@@ -1,0 +1,18 @@
+{
+  "name": "superclient-nodejs",
+  "version": "1.0.0",
+  "description": "Use for testing backend apis agile and faster",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "token": "node -e 'import(\"./shops/token.js\").then(t => t.getToken())'",
+    "index": "node index.js"
+  },
+  "author": "Juan David Rojas Cañizales",
+  "license": "ISC",
+  "dependencies": {
+    "node-fetch": "^3.2.9",
+    "xlsx": "^0.18.5"
+  },
+  "type": "module"
+}
