@@ -64,9 +64,9 @@ export class Log {
         append(this.filename, this.format(message, this.types.ERROR))
     }
 
-    interactive(colour, message) {
+    interactive(color, message){
         try {
-            console.log(colour, message, colour.reset)
+            console.error(color, message, colour.reset)
         } catch(err) {
             console.log(message)
         }

@@ -18,7 +18,7 @@ export function attempt(callbackTry = (() => true), callbackCatch  = (() => fals
  */
 export function tryUntil(...callbacks) {
     let result = null
-    for(let callback of args) {
+    for(let callback of callbacks) {
         if(attempt(callback)) {
             result = callback()
             break

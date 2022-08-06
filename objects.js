@@ -1,5 +1,5 @@
 import { writeJSON } from "./files.js"
-import { Log } from "./output.js"
+import { colour, Log } from "./output.js"
 import { minChars } from "./utils.js"
 
 const log = new Log()
@@ -34,23 +34,32 @@ const index = []
  * @param {*} objCheck Object that will be compared
  * @returns boolean that idicates if are or not equals
  */
-export function compareObjects(objReference, objCheck) {
+export function compareObjects(objReference, objCheck, ignore = []) {
     if (compareJSON(objReference, objCheck)) return true
-    let same = true
     const obj1 = formatObjects(objReference)
-    writeJSON("obj1.json", obj1)
-    while (index.length > 0) index.pop()
     const obj2 = formatObjects(objCheck)
-    writeJSON("obj2.json", obj2)
-    for(const [k,v] of Object.entries(obj1)){
-        if (typeof v == 'object' && compareJSON(v, obj2[k])) {
-            continue
-        }
-        if (obj2[k] != v) {
-            log.error(`Key: ${minChars(k, 20)} => ${minChars(" ", 5)} ${minChars(v,30)} | ${minChars(obj2[k], 30)}`)
+    let same = true
+    let counter = 0
+    let ignored = 0
+    for (const [i, obj] of obj1.entries()) {
+        const key = obj[0]
+        const val = obj[1]
+        const valCheck = obj2[i][1]
+        const timesObj1 = obj1.filter(e => (key === e[0]) && (`${val}` === `${e[1]}`))
+        const timesObj2 = obj2.filter(e => (key === e[0]) && (`${val}` === `${e[1]}`))
+        const sameLength = timesObj1.length == timesObj2.length
+
+        if (!sameLength) {
+            counter++
+            if (ignore.filter(i => key.includes(i)).length >= 1) {
+                ignored++
+                continue
+            }
+            log.error(`Key: ${minChars(key, 20)} missing   =>   ${minChars(JSON.stringify(val),100)}`)
             same = false
         }
     }
+    log.error(`diferencia: ${parseInt((counter / obj1.length) * 100)}% o ${counter}/${obj1.length} keys ignoradas: ${ignored}`)
     return same
 }
 
@@ -62,7 +71,7 @@ export function compareObjects(objReference, objCheck) {
  * @returns object with all its keys at top level
  */
 export function formatObjects(obj) {
-    let count = {}
+    let count = []
     if (typeof obj == "object") {
         if (Array.isArray(obj)) {
             for (let item of obj) {
@@ -72,14 +81,13 @@ export function formatObjects(obj) {
             for (const [k,v] of Object.entries(obj)) {
                 if (typeof v == 'object') {
                     if (v === null || v.length == 0 || Object.keys(v) == 0) {
-                        count[`${k}${index.length}`] = v
-                        index.push(1)
+                        count.push([k,v])
                     } else {
                         count = destruct(count, formatObjects(v))
                     }
                 } else {
-                    count[`${k}${index.length}`] = v
-                    index.push(1)
+                    count.push([k,v])
+
                 }
             }
         }
@@ -88,7 +96,7 @@ export function formatObjects(obj) {
 }
 
 function destruct(objOriginal, objToAdd) {
-    return {...objOriginal, ...objToAdd}
+    return [...objOriginal, ...objToAdd]
 }
 
 function compareJSON(obj1, obj2) {
