@@ -1,6 +1,6 @@
 # Client JS
 
-Client JS was created with the intention of facilitating the testing of apirests on a large scale, from executing thousands of requests to creating pipelines to be applied on the response of each request.
+Client JS was created with the intention of facilitating the testing of API-Rests on a large scale, from executing thousands of requests to creating pipelines to be applied on the response of each request.
 
 ## Files
 
