@@ -44,7 +44,6 @@ export function compareObjects(objReference, objCheck, ignore = []) {
     for (const [i, obj] of obj1.entries()) {
         const key = obj[0]
         const val = obj[1]
-        const valCheck = obj2[i][1]
         const timesObj1 = obj1.filter(e => (key === e[0]) && (`${val}` === `${e[1]}`))
         const timesObj2 = obj2.filter(e => (key === e[0]) && (`${val}` === `${e[1]}`))
         const sameLength = timesObj1.length == timesObj2.length
@@ -55,7 +54,7 @@ export function compareObjects(objReference, objCheck, ignore = []) {
                 ignored++
                 continue
             }
-            log.error(`Key: ${minChars(key, 20)} missing   =>   ${minChars(JSON.stringify(val),100)}`)
+            log.error(`Key: ${minChars(key, 20)} ${minChars(timesObj1.length, 3)} | ${minChars(timesObj2.length, 3)} missing   =>   ${minChars(JSON.stringify(val),100)}`)
             same = false
         }
     }
@@ -80,14 +79,20 @@ export function formatObjects(obj) {
         } else {
             for (const [k,v] of Object.entries(obj)) {
                 if (typeof v == 'object') {
-                    if (v === null || v.length == 0 || Object.keys(v) == 0) {
+                    if (v === null || v.length == 0 || (Object.keys(v) == 0 && !Array.isArray(v))) {
                         count.push([k,v])
                     } else {
-                        count = destruct(count, formatObjects(v))
+                        if (Array.isArray(v)) {
+                            for (const item of v) {
+                                if (typeof item != "object") count.push([k, item])
+                                else count = destruct(count, formatObjects(item))
+                            }
+                        } else {
+                            count = destruct(count, formatObjects(v))
+                        }
                     }
                 } else {
                     count.push([k,v])
-
                 }
             }
         }
