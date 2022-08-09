@@ -85,3 +85,12 @@ export function copy(data) {
     var proc = require('child_process').spawn('pbcopy'); 
     proc.stdin.write(data); proc.stdin.end();
 }
+
+export async function deleteFile(path) {
+    fs.unlink(path, (err => {
+        if (err) console.log(err);
+        else {
+          console.log(`\nDeleted file: ${path}`);
+        }
+      }));
+}
