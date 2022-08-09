@@ -1,4 +1,5 @@
 import readline from "readline";
+import CryptoJS from "crypto-js";
 
 export function attempt(callbackTry = (() => true), callbackCatch  = (() => false)) {
     try {
@@ -149,4 +150,30 @@ export async function secretInput(msg, callback = () => {}){
           resolve(value);
         });
       });
+}
+
+export function encryptObj(obj, ks, iv) {
+    const key = CryptoJS.enc.Utf8.parse(ks, iv);
+    const iv1 = CryptoJS.enc.Utf8.parse(ks, iv);
+    const encrypted = CryptoJS.AES.encrypt(JSON.stringify(obj), key, {
+        keySize: 16,
+        iv: iv1,
+        mode: CryptoJS.mode.ECB,
+        padding: CryptoJS.pad.Pkcs7
+    });
+
+    return encrypted + "";
+}
+
+export function decryptObj(cipher, ks, iv) {
+    const key = CryptoJS.enc.Utf8.parse(ks, iv);
+    const iv1 = CryptoJS.enc.Utf8.parse(ks, iv);
+    const plainText = CryptoJS.AES.decrypt(cipher, key, {
+        keySize: 16,
+        iv: iv1,
+        mode: CryptoJS.mode.ECB,
+        padding: CryptoJS.pad.Pkcs7
+    });
+    const text = plainText.toString(CryptoJS.enc.Utf8);
+    return JSON.parse(text, "utf-8")
 }
