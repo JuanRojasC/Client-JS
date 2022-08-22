@@ -71,6 +71,4 @@ export async function post(endpoint, headers = {}, body = {}, timeout = 5000) {
     return {status: 500, data: {}, err: err, time: 0}
 }
 
-export function timer(ms) {
-    return new Promise(res => setTimeout(res, ms))
-}
+export const timer = ms => new Promise(res => setTimeout(res, ms))

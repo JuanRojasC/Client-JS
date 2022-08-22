@@ -1,4 +1,5 @@
 import { write, writeJSON, append } from "./files.js"
+import { minChars } from "./utils.js";
 
 export function print(str) {
     console.log(str)
@@ -42,12 +43,12 @@ export class Log {
     constructor(clean, filename = "log.txt") {
         this.filename = filename
         this.headers = ["TIME", "TYPE", "MESSAGE"]
-        this.types = { NORMAL: "NORMAL", ERROR: "ERROR" }
+        this.types = { NORMAL: "NORMAL", ERROR: "ERROR", SUCCESS: "SUCCESS" }
         this.cleaned = clean ? this.startFile(clean) : false
     }
 
     format(msg, type = this.types.NORMAL) {
-        return `${this.time()}${" ".repeat(5)}${type}${" ".repeat(5)}${msg}\n`
+        return `${this.time()}${" ".repeat(5)}${minChars(type, 11)}${msg}\n`
     }
 
     time() {
@@ -71,6 +72,11 @@ export class Log {
             console.log(message)
         }
         append(this.filename, this.format(message, this.types.NORMAL))
+    }
+
+    success(message) {
+        console.error(colour.fg.green, message, colour.reset)
+        append(this.filename, this.format(message, this.types.SUCCESS))
     }
 
     startFile() {

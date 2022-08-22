@@ -59,6 +59,10 @@ export function minChars(str = "", min = 0) {
     return strFormatted
 }
 
+export function withIndex(str = '', index = 1, digits = 4) {
+    return `${"0".repeat(digits - `${index}`.length)}${index} ${str}`
+}
+
 export class Crono {
     constructor() {
         this.state = "initialized"

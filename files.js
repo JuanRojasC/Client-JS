@@ -1,4 +1,5 @@
 import f from "fs";
+import childProcess from 'child_process';
 const fs = f.promises;
 import { parseDate, parseNumber, tryUntil } from "./utils.js";
 
@@ -31,6 +32,11 @@ export async function read(path = "/.", format = "utf8", callback = null) {
  */
 export async function writeJSON(filename = "newfile.json", object = null, format = "utf8", callback = null) {
     return await write(filename, JSON.stringify(object), format, callback)
+}
+
+export async function readJSON(path) {
+    const file = await read(path)
+    return JSON.parse(file)
 }
 
 /**
@@ -82,8 +88,8 @@ export async function csvToObject(path) {
 }
 
 export function copy(data) {
-    var proc = require('child_process').spawn('pbcopy'); 
-    proc.stdin.write(data); proc.stdin.end();
+    var proc = childProcess.spawn('pbcopy'); 
+    proc.stdin.write(JSON.stringify(data)); proc.stdin.end();
 }
 
 export async function deleteFile(path) {
