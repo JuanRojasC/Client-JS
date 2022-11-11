@@ -109,3 +109,16 @@ function compareJSON(obj1, obj2) {
         return true
     }
 }
+
+export function validateProperty(obj={}, value="", ...subkeys) {
+    try {
+        let valueFound = obj[subkeys[0]]
+        const keysToFind = subkeys.slice(1)
+        for (const subkey of keysToFind) {
+            valueFound = valueFound[subkey]
+        }
+        return valueFound == value
+    } catch (err) {
+        return false
+    }
+}
