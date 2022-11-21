@@ -79,6 +79,25 @@ export class Log {
         append(this.filename, this.format(message, this.types.SUCCESS))
     }
 
+    rowSuccess(minCell, ...messages) {
+        console.error(colour.fg.green, this.row(minCell, ...messages), colour.reset)
+    }
+
+    rowError(minCell, ...messages) {
+        console.error(colour.fg.red, this.row(minCell, ...messages), colour.reset)
+    }
+
+    row(minCell, ...messages) {
+        let row = ''
+        for (const msg of messages) {
+            const msgFmt = minChars(msg, minCell)
+            row += msgFmt
+            row += ' | '
+            append(this.filename, this.format(msgFmt, this.types.SUCCESS))
+        }
+        return row
+    }
+
     startFile() {
         const titles = `${this.headers[0]}${" ".repeat(19)}${this.headers[1]}${" ".repeat(7)}${this.headers[2]}\n`
         write(this.filename, titles)

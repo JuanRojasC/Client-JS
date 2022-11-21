@@ -122,3 +122,20 @@ export function validateProperty(obj={}, value="", ...subkeys) {
         return false
     }
 }
+
+export function getProperty(obj={},  ...subkeys) {
+    try {
+        if (subkeys.length > 0) {
+            let valueFound = obj[subkeys[0]]
+            const keysToFind = subkeys.slice(1)
+            for (const subkey of keysToFind) {
+                valueFound = valueFound[subkey]
+            }
+            return valueFound
+        }
+        return null
+    } catch (err) {
+        return null
+    }
+}
+   
